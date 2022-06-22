@@ -1,7 +1,9 @@
 {
   "name": "mhrs-bot",
   "version": "1.0.0",
-  "dependencies": {},
+  "dependencies": {
+    "node-schedule": "^2.1.0"
+  },
   "devDependencies": {
     "puppeteer": "^13.5.2"
   }

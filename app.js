@@ -11,6 +11,8 @@ async function main() {
     let clinicSelector = 'span[title="' + CREDS.clinic +'"]';
 
     const browser = await puppeteer.launch({headless: false});
+    const context = browser.defaultBrowserContext();
+    await context.overridePermissions("https://mhrs.gov.tr", ['geolocation']);
     const page = await browser.newPage();
     await page.setViewport({width: 1200, height: 720});
     await page.goto('https://mhrs.gov.tr/vatandas/#/', { waitUntil: 'networkidle0' }); // wait until page load
@@ -31,14 +33,11 @@ async function main() {
 
     await page.waitForSelector('.hasta-randevu-card')
     await page.waitForTimeout(1500);
-    await page.evaluate(() => {
+    const localStorage = await page.evaluate(() =>  Object.assign({}, window.localStorage));
+    mhrsUser = localStorage["users-v-mhrs"];
+    mhrsToken = localStorage["token-v-mhrs"];
+    isAuth = localStorage["isAuth-v-mhrs"];
 
-            mhrsUser = localStorage.getItem("users-v-mhrs");
-            mhrsToken = localStorage.getItem("token-v-mhrs");
-            console.log(mhrsToken);
-            console.log(mhrsUser);
-        }
-    )
     await page.click('.hasta-randevu-card')
 
     await page.waitForSelector('.genel-arama-button');
@@ -94,8 +93,11 @@ async function main() {
         await page.click('div.ant-modal-footer > div > button.ant-btn.ant-btn-primary');
     }
 
-
+    page.close();
 
 }
 
-main();
+const schedule = require('node-schedule');
+schedule.scheduleJob('*/5 * * * *', function () {
+    main();
+});
