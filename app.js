@@ -70,6 +70,18 @@ async function main() {
     await page.waitForTimeout(500);
     await page.click(clinicSelector);
 
+    if (CREDS.hospital !== '') {
+        await page.waitForTimeout(500);
+        await page.waitForSelector('#vatandasApp > section > main > div > div.randevu__container > div > div.ant-card-body > div > div.ant-tabs-content.ant-tabs-content-animated.ant-tabs-top-content > div > div.rand-arama__container > form > div:nth-child(6) > div.ant-col.ant-form-item-control-wrapper > div > span > span > span > span')
+        await page.waitForTimeout(500);
+        await page.click('#vatandasApp > section > main > div > div.randevu__container > div > div.ant-card-body > div > div.ant-tabs-content.ant-tabs-content-animated.ant-tabs-top-content > div > div.rand-arama__container > form > div:nth-child(6) > div.ant-col.ant-form-item-control-wrapper > div > span > span > span > span')
+        await page.waitForTimeout(500);
+        const [button] = await page.$x("//span[contains(text(), '" + CREDS.hospital + "')]");
+        if (button) {
+            await button.click();
+        }
+    }
+
     await page.waitForSelector('button[type=submit]:not([disabled])');
     await page.waitForTimeout(500);
     await page.click('button[type=submit]');
@@ -106,6 +118,7 @@ async function main() {
 }
 
 const schedule = require('node-schedule');
+const CREDS = require("./creds");
 main();
 schedule.scheduleJob('*/5 * * * *', function () {
     main();

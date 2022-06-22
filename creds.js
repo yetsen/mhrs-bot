@@ -1,5 +1,6 @@
 exports.username = '';
 exports.password = '';
 exports.city = 'İSTANBUL(ANADOLU)';
-exports.clinic = 'General Surgery';
-exports.lastDate = '28.04.2022';
+exports.hospital = 'İSTANBUL- (ANADOLU)- ATAŞEHİR- FATİH SULTAN MEHMET EĞİTİM ARAŞTIRMA HASTANESİ';
+exports.clinic = 'Skin and Venereal Diseases (Dermatology)';
+exports.lastDate = '28.06.2022';
