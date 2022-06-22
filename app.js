@@ -91,6 +91,7 @@ async function main() {
     } catch {
         console.log("appointment not taken");
         page.close();
+        browser.close();
         return
     }
 
@@ -127,6 +128,7 @@ async function main() {
         isAppointmentTaken = true;
         console.log("appointment taken");
         page.close();
+        browser.close();
     }
 
 
