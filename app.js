@@ -2,6 +2,7 @@ let mhrsUser = "";
 let mhrsToken = "";
 let isAuth = "";
 
+let isAppointmentTaken = false;
 
 async function main() {
     const CREDS = require('./creds.js');
@@ -88,18 +89,29 @@ async function main() {
     try {
         await page.waitForSelector('.ant-list-item:nth-child(1)');
     } catch {
+        console.log("appointment not taken");
         page.close();
         return
     }
 
     await page.waitForTimeout(1000);
-    await page.click('.ant-list-item:nth-child(1)');
+    try {
+        await page.waitForSelector('body > div:nth-child(10) > div > div.ant-modal-wrap > div > div.ant-modal-content > div.ant-modal-footer > button.ant-btn.ant-btn-primary', {timeout: 3000});
+        await page.waitForTimeout(500);
+        await page.click('body > div:nth-child(10) > div > div.ant-modal-wrap > div > div.ant-modal-content > div.ant-modal-footer > button.ant-btn.ant-btn-primary');
+    } catch {
+
+    } finally {
+        await page.waitForTimeout(500);
+        await page.click('.ant-list-item:nth-child(1)');
+    }
     await page.waitForSelector('.ant-collapse-item:not(.ant-collapse-item-disabled):nth-child(1)');
     await page.waitForTimeout(1000);
     await page.click('.ant-collapse-item:not(.ant-collapse-item-disabled):nth-child(1)');
+    await page.waitForTimeout(500);
     await page.waitForSelector('button.slot-saat-button[type=button]:not([disabled])');
     await page.waitForTimeout(1000);
-    await page.click('button.slot-saat-button[type=button]:not([disabled]):nth-child(1)');
+    await page.click('button.slot-saat-button[type=button]:not([disabled])');
 
     try {
         await page.waitForSelector('.ant-modal-confirm-btns > button[type=button]', {timeout: 3000})
@@ -111,15 +123,19 @@ async function main() {
         await page.waitForSelector('div.ant-modal-footer > div > button.ant-btn.ant-btn-primary');
         await page.waitForTimeout(1000);
         await page.click('div.ant-modal-footer > div > button.ant-btn.ant-btn-primary');
+
+        isAppointmentTaken = true;
+        console.log("appointment taken");
+        page.close();
     }
 
-    page.close();
 
 }
 
 const schedule = require('node-schedule');
-const CREDS = require("./creds");
+
 main();
 schedule.scheduleJob('*/5 * * * *', function () {
-    main();
+    if (!isAppointmentTaken)
+        main();
 });
