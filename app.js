@@ -77,6 +77,7 @@ async function main() {
         await page.waitForSelector('.ant-list-item:nth-child(1)');
     } catch {
         page.close();
+        return
     }
 
     await page.waitForTimeout(1000);
@@ -105,7 +106,6 @@ async function main() {
 }
 
 const schedule = require('node-schedule');
-const CREDS = require("./creds");
 main();
 schedule.scheduleJob('*/5 * * * *', function () {
     main();
