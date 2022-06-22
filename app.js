@@ -26,10 +26,13 @@ async function main() {
         }, mhrsUser, mhrsToken, isAuth
     )
     await page.reload({ waitUntil: ["networkidle0", "domcontentloaded"] });
-    await page.type('#LoginForm_username', CREDS.username);
-    await page.type('#LoginForm_password', CREDS.password);
+    let loginElement = (await page.$('#LoginForm_username')) || "";
+    if (loginElement !== "") {
+        await page.type('#LoginForm_username', CREDS.username);
+        await page.type('#LoginForm_password', CREDS.password);
 
-    await page.click('button[type=submit]');
+        await page.click('button[type=submit]');   
+    }
 
     await page.waitForSelector('.hasta-randevu-card')
     await page.waitForTimeout(1500);
@@ -70,8 +73,12 @@ async function main() {
     await page.waitForSelector('button[type=submit]:not([disabled])');
     await page.waitForTimeout(500);
     await page.click('button[type=submit]');
+    try {
+        await page.waitForSelector('.ant-list-item:nth-child(1)');
+    } catch {
+        page.close();
+    }
 
-    await page.waitForSelector('.ant-list-item:nth-child(1)');
     await page.waitForTimeout(1000);
     await page.click('.ant-list-item:nth-child(1)');
     await page.waitForSelector('.ant-collapse-item:not(.ant-collapse-item-disabled):nth-child(1)');
@@ -98,6 +105,8 @@ async function main() {
 }
 
 const schedule = require('node-schedule');
+const CREDS = require("./creds");
+main();
 schedule.scheduleJob('*/5 * * * *', function () {
     main();
 });
