@@ -1,3 +1,6 @@
+let mhrsUser = "";
+let mhrsToken = "";
+let isAuth = "";
 
 
 async function main() {
@@ -11,6 +14,16 @@ async function main() {
     const page = await browser.newPage();
     await page.setViewport({width: 1200, height: 720});
     await page.goto('https://mhrs.gov.tr/vatandas/#/', { waitUntil: 'networkidle0' }); // wait until page load
+
+    await page.evaluate((mhrsUser, mhrsToken, isAuth) => {
+            console.log(mhrsUser);
+            console.log(mhrsToken);
+            localStorage.setItem("users-v-mhrs", mhrsUser);
+            localStorage.setItem("token-v-mhrs", mhrsToken);
+            localStorage.setItem("isAuth-v-mhrs", isAuth);
+        }, mhrsUser, mhrsToken, isAuth
+    )
+    await page.reload({ waitUntil: ["networkidle0", "domcontentloaded"] });
     await page.type('#LoginForm_username', CREDS.username);
     await page.type('#LoginForm_password', CREDS.password);
 
@@ -18,6 +31,14 @@ async function main() {
 
     await page.waitForSelector('.hasta-randevu-card')
     await page.waitForTimeout(1500);
+    await page.evaluate(() => {
+
+            mhrsUser = localStorage.getItem("users-v-mhrs");
+            mhrsToken = localStorage.getItem("token-v-mhrs");
+            console.log(mhrsToken);
+            console.log(mhrsUser);
+        }
+    )
     await page.click('.hasta-randevu-card')
 
     await page.waitForSelector('.genel-arama-button');
