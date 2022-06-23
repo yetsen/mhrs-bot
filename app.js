@@ -53,14 +53,17 @@ async function main() {
     await page.waitForTimeout(500);
 
     console.log("Search for appointment page is opened " + new Date());
-    await page.click('input[placeholder="Starting Date Please Select"]');
-    await page.waitForSelector('.ant-calendar-today-btn');
-    await page.click('.ant-calendar-today-btn');
-    await page.click('input[placeholder="Ending Date Please Select"]')
-    await page.keyboard.type(CREDS.lastDate);
-    await page.keyboard.press('Enter');
+    if (CREDS.lastDate !== '') {
+        await page.click('input[placeholder="Starting Date Please Select"]');
+        await page.waitForSelector('.ant-calendar-today-btn');
+        await page.click('.ant-calendar-today-btn');
+        await page.click('input[placeholder="Ending Date Please Select"]')
+        await page.keyboard.type(CREDS.lastDate);
+        await page.keyboard.press('Enter');
 
-    console.log("Dates are filled " + new Date());
+        console.log("Dates are filled " + new Date());
+
+    }
 
     await page.waitForSelector('#vatandasApp > section > main > div > div.randevu__container > div > div.ant-card-body > div > div.ant-tabs-content.ant-tabs-content-animated.ant-tabs-top-content > div > div.rand-arama__container > form > div:nth-child(3) > div.ant-col.ant-form-item-control-wrapper > div > span > span.ant-select-enabled');
     await page.click('#vatandasApp > section > main > div > div.randevu__container > div > div.ant-card-body > div > div.ant-tabs-content.ant-tabs-content-animated.ant-tabs-top-content > div > div.rand-arama__container > form > div:nth-child(3) > div.ant-col.ant-form-item-control-wrapper > div > span > span');
@@ -143,8 +146,7 @@ async function main() {
 
 const schedule = require('node-schedule');
 
-main();
-schedule.scheduleJob('*/5 * * * *', function () {
+schedule.scheduleJob('*/2 * * * *', function () {
     if (!isAppointmentTaken)
         main();
 });
