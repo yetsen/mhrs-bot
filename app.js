@@ -138,6 +138,7 @@ async function main() {
 
         isAppointmentTaken = true;
         console.log("appointment taken");
+        await page.waitForTimeout(10000);
         page.close();
         browser.close();
     }
