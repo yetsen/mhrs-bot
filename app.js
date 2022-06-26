@@ -68,7 +68,7 @@ async function main() {
     await page.waitForSelector('#vatandasApp > section > main > div > div.randevu__container > div > div.ant-card-body > div > div.ant-tabs-content.ant-tabs-content-animated.ant-tabs-top-content > div > div.rand-arama__container > form > div:nth-child(3) > div.ant-col.ant-form-item-control-wrapper > div > span > span.ant-select-enabled');
     await page.waitForTimeout(500);
     await page.click('#vatandasApp > section > main > div > div.randevu__container > div > div.ant-card-body > div > div.ant-tabs-content.ant-tabs-content-animated.ant-tabs-top-content > div > div.rand-arama__container > form > div:nth-child(3) > div.ant-col.ant-form-item-control-wrapper > div > span > span');
-    await page.waitForTimeout(1000);
+    await page.waitForSelector(citySelector);
     await page.click(citySelector);
 
     console.log("City is filled " + new Date());
@@ -148,7 +148,7 @@ async function main() {
 
 const schedule = require('node-schedule');
 
-schedule.scheduleJob('*/2 * * * *', function () {
+schedule.scheduleJob('*/1 * * * *', function () {
     if (!isAppointmentTaken)
         main();
 });
